@@ -309,6 +309,22 @@ table.data tr.grup-akun td b{color:var(--biru)}
 table.data tr.grup-item td.rinci-item{padding-left:30px;color:var(--tinta-lembut)}
 table.data tr.grup-item td{font-size:13.5px}
 table.data tr.grup-sub:hover td,table.data tr.grup-akun:hover td{filter:brightness(.98)}
+/* Bar % realisasi di Monitoring per RO. Warna mengikuti status terhadap
+   target tertimbang satker, garis tipis biru tua menandai target, dan
+   angka persen tetap tertulis di tengah bar. */
+table.data th.kol-bar{text-align:center;min-width:118px}
+table.data td.kol-bar{padding-top:7px;padding-bottom:7px;vertical-align:top}
+.bar-persen{position:relative;height:24px;min-width:104px;border-radius:5px;overflow:hidden;
+  background:#f1eee7;box-shadow:inset 0 0 0 1px rgba(8,39,77,.07)}
+.bar-persen .isi{position:absolute;left:0;top:0;bottom:0;border-radius:5px 0 0 5px}
+.bar-persen.capai .isi{background:linear-gradient(90deg,#dcefe2,#86bf9a)}
+.bar-persen.dekat .isi{background:linear-gradient(90deg,#f6ebd0,#d7b066)}
+.bar-persen.kurang .isi{background:linear-gradient(90deg,#f8e2dd,#e09a8c)}
+.bar-persen.netral .isi{background:linear-gradient(90deg,#e8ecf1,#b9c4d1)}
+.bar-persen .tanda{position:absolute;top:3px;bottom:3px;width:2px;margin-left:-1px;background:var(--biru-tua);opacity:.7;border-radius:1px}
+.bar-persen .teks{position:relative;z-index:1;display:block;text-align:center;line-height:24px;
+  font-size:12.5px;font-weight:700;color:var(--biru-tua);font-variant-numeric:tabular-nums;white-space:nowrap}
+table.data tr.grup-item .bar-persen .teks{font-weight:600}
 
 /* ---------- pemilih rincian output ---------- */
 /* Garis emas di kiri mengikuti kotak .janji pada perkakas PDF. */
@@ -508,6 +524,11 @@ footer.kaki{
 @keyframes pendar-putar{to{rotate:360deg}}
 
 /* ---------- Quick Report ---------- */
+.qr-ukur{position:absolute;left:-30000px;top:0;visibility:hidden;pointer-events:none;font-family:inherit}
+.qr-ukur table.qr{width:auto;min-width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.qr-ukur table.qr th,.qr-ukur table.qr td{padding:.2em .5em;position:static}
+.qr-ukur table.qr thead th{font-size:.92em}
+.qr-ukur table.qr td.lbl{max-width:none;min-width:var(--qr-lbl,14em)}
 .qr-baris-atur,.qr-alat{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin-bottom:14px}
 .qr-renggang{flex:1 1 auto}
 .qr-label-sejajar{font-size:14px;font-weight:600;color:var(--tinta);margin:0}
@@ -637,6 +658,12 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
   table.data tr.grup-akun td{background:#fff;border-top:.35pt solid var(--garis)}
   table.data tr.grup-item td.rinci-item{padding-left:12pt}
   table.data tr.grup-item td{font-size:6.4pt}
+  table.data th.kol-bar{min-width:0}
+  table.data td.kol-bar{padding-top:1pt;padding-bottom:1pt}
+  .bar-persen{height:9.5pt;min-width:46pt;border-radius:2pt}
+  .bar-persen .isi{border-radius:2pt 0 0 2pt}
+  .bar-persen .tanda{top:1pt;bottom:1pt;width:.8pt}
+  .bar-persen .teks{line-height:9.5pt;font-size:inherit}
 
   .hero{grid-template-columns:1.3fr 1fr;gap:12pt}
   .angka-besar{font-size:27pt}
@@ -667,11 +694,18 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
   body.cetak-laporan #tab-laporan{display:block!important}
   .qr-gulir{max-height:none!important;overflow:visible!important}
   table.qr thead{position:static}
-  table.qr{font-size:6.8pt}
-  table.qr td.lbl{max-width:none;min-width:0;position:static;box-shadow:none}
+  /* Ukuran huruf dihitung skrip sebelum mencetak (qrAturCetak), 7 sampai 11 pt,
+     supaya tabel selebar mungkin di kertas. Jarak sel ikut membesar dalam em. */
+  table.qr{font-size:var(--qr-huruf,6.8pt);width:auto;min-width:100%}
+  table.qr th,table.qr td{padding:.2em .5em}
+  table.qr thead th{font-size:.92em}
+  table.qr td.lbl{max-width:none;min-width:var(--qr-lbl,14em);position:static;box-shadow:none}
   table.qr th.dim,table.qr th.sudut{position:static}
   .qr-hasil{page:lanskap}
-  .qr-info{font-size:7.4pt;margin:0 0 4pt}
+  .qr-info{font-size:max(7.4pt,calc(var(--qr-huruf,6.8pt) * 1.04));margin:0 0 .6em}
+  body.cetak-laporan .qr-hasil h2{font-size:max(8.4pt,calc(var(--qr-huruf,6.8pt) * 1.3))}
+  /* laporan sempit dicetak tegak */
+  body.cetak-laporan.cetak-tegak .qr-hasil,body.cetak-laporan.cetak-tegak .kop,body.cetak-laporan.cetak-tegak .bungkus{page:auto}
   button.qr-lipat{display:none}
   body.cetak-laporan .kop,body.cetak-laporan .bungkus{page:lanskap}
   @page lanskap{size:A4 landscape;margin:8mm 9mm}
@@ -765,7 +799,7 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
     </nav>
 
     <!-- ============ RINGKASAN ============ -->
-    <div id="tab-ringkasan" class="">
+    <div id="tab-ringkasan">
       <section class="pembuka" aria-labelledby="judulPembuka">
         <div class="pembuka-cerita">
           <p class="pembuka-label">Ringkasan <span>/</span> Capaian satker</p>
@@ -853,18 +887,18 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
           <div>
             <label class="baris" for="pilihRo">Rincian output</label>
             <div class="pilihan-besar">
-              <button type="button" class="langkah" id="roSebelum" aria-label="Output sebelumnya">‹</button>
+              <button type="button" class="langkah" id="roSebelum" aria-label="Output sebelumnya" disabled="">‹</button>
               <select id="pilihRo"><optgroup label="Subbagian Umum"><option value="EBA.002">EBA.002 — Kerumahtanggaan</option><option value="EBA.994">EBA.994 — Layanan Perkantoran</option><option value="EBB.001">EBB.001 — Peralatan Fasilitas Perkantoran</option><option value="EBB.004">EBB.004 — Gedung/Bangunan</option></optgroup><optgroup label="Seksi Pengelolaan Kekayaan Negara"><option value="AAH.001">AAH.001 — Keputusan Permohonan Pengelolaan Kekayaan Negara</option><option value="ABA.002">ABA.002 — Rekomendasi Hasil Kajian Portofolio Aset</option><option value="ABA.003">ABA.003 — Optimalisasi Pengelolaan Aset Negara</option><option value="AEF.I01">AEF.I01 — Sosialisasi Pengelolaan Kekayaan Negara</option><option value="FAE.004">FAE.004 — Rekomendasi di Bidang Kekayaan Negara</option><option value="FAE.301">FAE.301 — Rekomendasi BMN Berupa Tanah yang Disertipikatkan (PU)</option><option value="FAK.001">FAK.001 — Aset BUN yang Dikelola</option></optgroup><optgroup label="Seksi Piutang Negara"><option value="AAH.002">AAH.002 — Keputusan Hasil Pengurusan/Pengelolaan Piutang Negara</option><option value="AEF.002">AEF.002 — Sosialisasi Pengelolaan Piutang Negara</option></optgroup><optgroup label="Seksi Hukum dan Informasi"><option value="BMB.001">BMB.001 — Pembinaan/Edukasi Publik</option><option value="BMB.002">BMB.002 — Kehumasan</option><option value="EBA.969">EBA.969 — Layanan Bantuan Hukum</option></optgroup><optgroup label="Seksi Kepatuhan Internal"><option value="EBD.001">EBD.001 — Rekomendasi Kepatuhan Internal</option></optgroup><optgroup label="Kelompok Jafung Pelelang"><option value="AEF.003">AEF.003 — Sosialisasi/Edukasi di Bidang Lelang</option><option value="BAH.001">BAH.001 — Risalah Lelang</option><option value="FAE.007">FAE.007 — Penggalian Potensi Lelang</option></optgroup><optgroup label="Kelompok Jafung Penilai"><option value="BAH.002">BAH.002 — Laporan Penilaian</option><option value="FAE.005">FAE.005 — Rekomendasi Hasil Penilaian</option></optgroup></select>
               <button type="button" class="langkah" id="roSesudah" aria-label="Output berikutnya">›</button>
             </div>
           </div>
           <div>
             <label class="baris">Unit pengampu</label>
-            <p class="num" id="roUnit" style="margin:6px 0 0;font-weight:600">Kelompok Jafung Penilai</p>
+            <p class="num" id="roUnit" style="margin:6px 0 0;font-weight:600">Subbagian Umum</p>
           </div>
           <div>
             <label class="baris">Kegiatan</label>
-            <p class="num" id="roKeg" style="margin:6px 0 0;font-weight:600">CD.4798 — Pengelolaan Aset</p>
+            <p class="num" id="roKeg" style="margin:6px 0 0;font-weight:600">WA.4701 — Pengelolaan Keuangan, BMN, dan Umum</p>
           </div>
         </div>
       </section>
@@ -872,25 +906,25 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
       <section class="panel">
         <div class="hero">
           <div>
-            <p class="angka-besar"><span id="roPersen">44,2</span><small>%</small></p>
-            <p class="kabar" id="roKabar">Output ini <b>45,76 persen poin di bawah</b> target tertimbang satker.</p>
-            <div class="rel kurang" id="relRo"><div class="isi" style="width: 44.24%;"></div><div class="tanda" style="display: block; left: 90%;"></div></div>
+            <p class="angka-besar"><span id="roPersen">74,9</span><small>%</small></p>
+            <p class="kabar" id="roKabar">Output ini <b>15,07 persen poin di bawah</b> target tertimbang satker.</p>
+            <div class="rel kurang" id="relRo"><div class="isi" style="width: 74.93%;"></div><div class="tanda" style="display: block; left: 90%;"></div></div>
             <div class="skala"><span>0%</span><span id="roLabelTarget">target 90,0%</span><span>100%</span></div>
           </div>
           <table class="ringkas">
-            <tbody><tr><td>Pagu output</td><td class="num" id="roPagu">110.777.000</td></tr>
-            <tr><td>Realisasi s.d. periode</td><td class="num" id="roReal">49.007.940</td></tr>
-            <tr><td>Realisasi bulan berjalan</td><td class="num" id="roBulan">2.964.000</td></tr>
-            <tr><td>Sisa anggaran</td><td class="num" id="roSisa">61.769.060</td></tr>
-            <tr><td>Jumlah item</td><td class="num" id="roItem">13</td></tr>
-            <tr><td>Item belum terealisasi</td><td class="num" id="roBelum">5</td></tr>
+            <tbody><tr><td>Pagu output</td><td class="num" id="roPagu">43.812.000</td></tr>
+            <tr><td>Realisasi s.d. periode</td><td class="num" id="roReal">32.828.097</td></tr>
+            <tr><td>Realisasi bulan berjalan</td><td class="num" id="roBulan">880.000</td></tr>
+            <tr><td>Sisa anggaran</td><td class="num" id="roSisa">10.983.903</td></tr>
+            <tr><td>Jumlah item</td><td class="num" id="roItem">10</td></tr>
+            <tr><td>Item belum terealisasi</td><td class="num" id="roBelum">0</td></tr>
           </tbody></table>
         </div>
       </section>
 
       <section class="panel">
         <h2>Detail item belanja</h2>
-        <div class="gulir"><table class="data" id="tblItemRo"><thead><tr><th>Uraian</th><th class="n">Pagu</th><th class="n">S.d. bulan lalu</th><th class="n">Bulan ini</th><th class="n">Total realisasi</th><th class="n">% real.</th><th class="n">Sisa pagu</th></tr></thead><tbody><tr class="grup-sub"><td>Survey Lapangan dan Penilaian</td><td class="n num">55.694.000</td><td class="n num">45.011.940</td><td class="n num">1.870.000</td><td class="n num">46.881.940</td><td class="n num">84,2%</td><td class="n num">8.812.060</td></tr><tr class="grup-akun"><td><b>524111</b> Belanja Perjalanan Dinas Biasa</td><td class="n num">45.902.000</td><td class="n num">38.143.940</td><td class="n num">0</td><td class="n num">38.143.940</td><td class="n num">83,1%</td><td class="n num">7.758.060</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Luar Kota (Kalimantan Timur)</td><td class="n num">15.480.000</td><td class="n num">14.376.000</td><td class="n num">0</td><td class="n num">14.376.000</td><td class="n num">92,9%</td><td class="n num">1.104.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Biaya Penginapan Perjalanan Dinas Pejabat Eselon IV/Golongan III (KALIMANTAN TIMUR)</td><td class="n num">22.620.000</td><td class="n num">19.624.985</td><td class="n num">0</td><td class="n num">19.624.985</td><td class="n num">86,8%</td><td class="n num">2.995.015</td></tr><tr class="grup-item"><td class="lebar rinci-item">Satuan biaya transportasi darat dari Balikpapan ke luar Kota</td><td class="n num">7.802.000</td><td class="n num">4.142.955</td><td class="n num">0</td><td class="n num">4.142.955</td><td class="n num">53,1%</td><td class="n num">3.659.045</td></tr><tr class="grup-akun"><td><b>524113</b> Belanja Perjalanan Dinas Dalam Kota</td><td class="n num">9.792.000</td><td class="n num">6.868.000</td><td class="n num">1.870.000</td><td class="n num">8.738.000</td><td class="n num">89,2%</td><td class="n num">1.054.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Dalam Kota Lebih dari 8 Jam (Kalimantan Timur)</td><td class="n num">9.792.000</td><td class="n num">6.868.000</td><td class="n num">1.870.000</td><td class="n num">8.738.000</td><td class="n num">89,2%</td><td class="n num">1.054.000</td></tr><tr class="grup-sub"><td>Kegiatan Pendukung Analisis Terpisah di Bidang Penilaian</td><td class="n num">4.495.000</td><td class="n num">1.032.000</td><td class="n num">754.000</td><td class="n num">1.786.000</td><td class="n num">39,7%</td><td class="n num">2.709.000</td></tr><tr class="grup-akun"><td><b>521211</b> Belanja Bahan</td><td class="n num">825.000</td><td class="n num">0</td><td class="n num">754.000</td><td class="n num">754.000</td><td class="n num">91,4%</td><td class="n num">71.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Makan Rapat Biasa KALIMANTAN TIMUR</td><td class="n num">528.000</td><td class="n num">0</td><td class="n num">500.000</td><td class="n num">500.000</td><td class="n num">94,7%</td><td class="n num">28.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Snack Rapat Biasa KALIMANTAN TIMUR</td><td class="n num">297.000</td><td class="n num">0</td><td class="n num">254.000</td><td class="n num">254.000</td><td class="n num">85,5%</td><td class="n num">43.000</td></tr><tr class="grup-akun"><td><b>524111</b> Belanja Perjalanan Dinas Biasa</td><td class="n num">3.670.000</td><td class="n num">1.032.000</td><td class="n num">0</td><td class="n num">1.032.000</td><td class="n num">28,1%</td><td class="n num">2.638.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Luar Kota (Kalimantan Timur)</td><td class="n num">2.064.000</td><td class="n num">1.032.000</td><td class="n num">0</td><td class="n num">1.032.000</td><td class="n num">50,0%</td><td class="n num">1.032.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Biaya Penginapan Perjalanan Dinas Pejabat Eselon IV/Golongan III (KALIMANTAN TIMUR)</td><td class="n num">1.200.000</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0,0%</td><td class="n num">1.200.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Satuan biaya transportasi darat dari Balikpapan ke luar Kota</td><td class="n num">406.000</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0,0%</td><td class="n num">406.000</td></tr><tr class="grup-sub"><td>Dukungan Pelaksanaan Direktif Presiden dan Program Prioritas Nasional</td><td class="n num">50.588.000</td><td class="n num">0</td><td class="n num">340.000</td><td class="n num">340.000</td><td class="n num">0,7%</td><td class="n num">50.248.000</td></tr><tr class="grup-akun"><td><b>524111</b> Belanja Perjalanan Dinas Biasa</td><td class="n num">42.428.000</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0,0%</td><td class="n num">42.428.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Luar Kota (Kalimantan Timur)</td><td class="n num">15.480.000</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0,0%</td><td class="n num">15.480.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Biaya Penginapan Perjalanan Dinas Pejabat Eselon IV/Golongan III (KALIMANTAN TIMUR)</td><td class="n num">19.296.000</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0,0%</td><td class="n num">19.296.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Satuan biaya transportasi darat dari Balikpapan ke luar Kota</td><td class="n num">7.652.000</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0</td><td class="n num">0,0%</td><td class="n num">7.652.000</td></tr><tr class="grup-akun"><td><b>524113</b> Belanja Perjalanan Dinas Dalam Kota</td><td class="n num">8.160.000</td><td class="n num">0</td><td class="n num">340.000</td><td class="n num">340.000</td><td class="n num">4,2%</td><td class="n num">7.820.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Dalam Kota Lebih dari 8 Jam (Kalimantan Timur)</td><td class="n num">8.160.000</td><td class="n num">0</td><td class="n num">340.000</td><td class="n num">340.000</td><td class="n num">4,2%</td><td class="n num">7.820.000</td></tr><tr class="jumlah"><td>Jumlah output</td><td class="n num">110.777.000</td><td class="n num">46.043.940</td><td class="n num">2.964.000</td><td class="n num">49.007.940</td><td class="n num">44,2%</td><td class="n num">61.769.060</td></tr></tbody></table></div>
+        <div class="gulir"><table class="data" id="tblItemRo"><thead><tr><th>Uraian</th><th class="n">Pagu</th><th class="n">S.d. bulan lalu</th><th class="n">Bulan ini</th><th class="n">Total realisasi</th><th class="kol-bar">% real.</th><th class="n">Sisa pagu</th></tr></thead><tbody><tr class="grup-sub"><td>Pelayanan Umum, Pelayanan Rumah Tangga dan Perlengkapan</td><td class="n num">43.812.000</td><td class="n num">31.948.097</td><td class="n num">880.000</td><td class="n num">32.828.097</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:74.93%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">74,9%</span></div></td><td class="n num">10.983.903</td></tr><tr class="grup-akun"><td><b>521211</b> Belanja Bahan</td><td class="n num">10.500.000</td><td class="n num">9.730.500</td><td class="n num">0</td><td class="n num">9.730.500</td><td class="kol-bar"><div class="bar-persen capai" title="Di atas target, target 90,0%"><span class="isi" style="width:92.67%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">92,7%</span></div></td><td class="n num">769.500</td></tr><tr class="grup-item"><td class="lebar rinci-item">KDM - Makan Rapat Biasa (Kalimantan Timur)</td><td class="n num">6.750.000</td><td class="n num">6.664.000</td><td class="n num">0</td><td class="n num">6.664.000</td><td class="kol-bar"><div class="bar-persen capai" title="Di atas target, target 90,0%"><span class="isi" style="width:98.73%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">98,7%</span></div></td><td class="n num">86.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">KDM - Snack Rapat Biasa (Kalimantan Timur)</td><td class="n num">3.750.000</td><td class="n num">3.066.500</td><td class="n num">0</td><td class="n num">3.066.500</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:81.77%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">81,8%</span></div></td><td class="n num">683.500</td></tr><tr class="grup-akun"><td><b>524111</b> Belanja Perjalanan Dinas Biasa</td><td class="n num">25.968.000</td><td class="n num">16.749.597</td><td class="n num">200.000</td><td class="n num">16.949.597</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:65.27%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">65,3%</span></div></td><td class="n num">9.018.403</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Luar Kota (Kalimantan Timur)</td><td class="n num">6.192.000</td><td class="n num">4.528.000</td><td class="n num">0</td><td class="n num">4.528.000</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:73.13%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">73,1%</span></div></td><td class="n num">1.664.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Biaya Penginapan Perjalanan Dinas Pejabat Eselon III/Golongan IV (KALIMANTAN TIMUR)</td><td class="n num">6.000.000</td><td class="n num">3.368.664</td><td class="n num">200.000</td><td class="n num">3.568.664</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:59.48%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">59,5%</span></div></td><td class="n num">2.431.336</td></tr><tr class="grup-item"><td class="lebar rinci-item">Satuan biaya transportasi darat dari Balikpapan ke Luar Kota</td><td class="n num">1.200.000</td><td class="n num">32.500</td><td class="n num">0</td><td class="n num">32.500</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:2.71%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">2,7%</span></div></td><td class="n num">1.167.500</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Luar Kota (Kalimantan Timur)</td><td class="n num">6.192.000</td><td class="n num">5.140.000</td><td class="n num">0</td><td class="n num">5.140.000</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:83.01%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">83,0%</span></div></td><td class="n num">1.052.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Biaya Penginapan Perjalanan Dinas Pejabat Eselon III/Golongan IV (KALIMANTAN TIMUR)</td><td class="n num">5.184.000</td><td class="n num">3.250.433</td><td class="n num">0</td><td class="n num">3.250.433</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:62.70%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">62,7%</span></div></td><td class="n num">1.933.567</td></tr><tr class="grup-item"><td class="lebar rinci-item">Satuan biaya transportasi darat dari Balikpapan ke Luar Kota</td><td class="n num">1.200.000</td><td class="n num">430.000</td><td class="n num">0</td><td class="n num">430.000</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:35.83%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">35,8%</span></div></td><td class="n num">770.000</td></tr><tr class="grup-akun"><td><b>524113</b> Belanja Perjalanan Dinas Dalam Kota</td><td class="n num">7.344.000</td><td class="n num">5.468.000</td><td class="n num">680.000</td><td class="n num">6.148.000</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:83.71%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">83,7%</span></div></td><td class="n num">1.196.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Dalam Kota Lebih dari 8 Jam (Kalimantan Timur)</td><td class="n num">4.080.000</td><td class="n num">3.020.000</td><td class="n num">0</td><td class="n num">3.020.000</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:74.02%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">74,0%</span></div></td><td class="n num">1.060.000</td></tr><tr class="grup-item"><td class="lebar rinci-item">Uang Harian Perjalanan Dinas Dalam Kota Lebih dari 8 Jam (Kalimantan Timur)</td><td class="n num">3.264.000</td><td class="n num">2.448.000</td><td class="n num">680.000</td><td class="n num">3.128.000</td><td class="kol-bar"><div class="bar-persen capai" title="Di atas target, target 90,0%"><span class="isi" style="width:95.83%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">95,8%</span></div></td><td class="n num">136.000</td></tr><tr class="jumlah"><td>Jumlah output</td><td class="n num">43.812.000</td><td class="n num">31.948.097</td><td class="n num">880.000</td><td class="n num">32.828.097</td><td class="kol-bar"><div class="bar-persen kurang" title="Perlu percepatan, target 90,0%"><span class="isi" style="width:74.93%"></span><span class="tanda" style="left:90.00%"></span><span class="teks">74,9%</span></div></td><td class="n num">10.983.903</td></tr></tbody></table></div>
       </section>
     </div>
 
@@ -909,14 +943,14 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
         </div>
         <p class="tanya">Seret dimensi ke kotak <b>Baris</b> atau <b>Kolom</b>, atau klik dimensinya untuk memindahkan dan menyaring nilainya. Urutan dimensi di dalam kotak menentukan tingkat pengelompokan.</p>
         <div class="qr-zona-wadah">
-          <div class="qr-zona" data-zona="tersedia"><h3>Dimensi tersedia</h3><div class="qr-chips"><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="kegiatan" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Kegiatan<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="output" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Rincian output<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="unit" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Unit pengampu<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="subkomponen" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Subkomponen<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="kelompok" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Kelompok belanja<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="jenis" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Jenis belanja<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="item" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Item<span class="panah-bawah">▾</span></div></div></div>
-          <div class="qr-zona" data-zona="baris"><h3>Baris</h3><div class="qr-chips"><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="akun" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring"><span class="no">1</span>Akun<span class="panah-bawah">▾</span></div></div></div>
-          <div class="qr-zona" data-zona="kolom"><h3>Kolom</h3><div class="qr-chips"></div></div>
+          <div class="qr-zona" data-zona="tersedia"><h3>Dimensi tersedia</h3><div class="qr-chips"><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="unit" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Unit pengampu<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="subkomponen" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Subkomponen<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="kelompok" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Kelompok belanja<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="akun" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Akun<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="item" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring">Item<span class="panah-bawah">▾</span></div></div></div>
+          <div class="qr-zona" data-zona="baris"><h3>Baris</h3><div class="qr-chips"><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="kegiatan" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring"><span class="no">1</span>Kegiatan<span class="panah-bawah">▾</span></div><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="output" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring"><span class="no">2</span>Rincian output<span class="panah-bawah">▾</span></div></div></div>
+          <div class="qr-zona" data-zona="kolom"><h3>Kolom</h3><div class="qr-chips"><div class="qr-chip" role="button" tabindex="0" draggable="true" data-dim="jenis" aria-haspopup="dialog" title="Seret untuk memindahkan, klik untuk menyaring"><span class="no">1</span>Jenis belanja<span class="panah-bawah">▾</span></div></div></div>
         </div>
         <div class="qr-opsi">
           <fieldset class="qr-kelompok-opsi">
             <legend>Nilai yang ditampilkan</legend>
-            <div class="qr-centang-nilai" id="qrNilai"><label class="centang"><input type="checkbox" data-nilai="pagu" checked=""> Pagu</label><label class="centang"><input type="checkbox" data-nilai="blokir"> Blokir</label><label class="centang"><input type="checkbox" data-nilai="lalu"> Realisasi s.d. bulan lalu</label><label class="centang"><input type="checkbox" data-nilai="ini"> Realisasi bulan ini</label><label class="centang"><input type="checkbox" data-nilai="sd" checked=""> Realisasi s.d. periode</label><label class="centang"><input type="checkbox" data-nilai="sisa" checked=""> Sisa pagu</label><label class="centang"><input type="checkbox" data-nilai="persen" checked=""> Persen realisasi</label><label class="centang"><input type="checkbox" data-nilai="jumlah"> Jumlah item</label></div>
+            <div class="qr-centang-nilai" id="qrNilai"><label class="centang"><input type="checkbox" data-nilai="pagu" checked=""> Pagu</label><label class="centang"><input type="checkbox" data-nilai="blokir"> Blokir</label><label class="centang"><input type="checkbox" data-nilai="lalu"> Realisasi s.d. bulan lalu</label><label class="centang"><input type="checkbox" data-nilai="ini"> Realisasi bulan ini</label><label class="centang"><input type="checkbox" data-nilai="sd"> Realisasi s.d. periode</label><label class="centang"><input type="checkbox" data-nilai="sisa"> Sisa pagu</label><label class="centang"><input type="checkbox" data-nilai="persen"> Persen realisasi</label><label class="centang"><input type="checkbox" data-nilai="jumlah"> Jumlah item</label></div>
           </fieldset>
           <fieldset class="qr-kelompok-opsi">
             <legend>Tampilan</legend>
@@ -951,12 +985,12 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
           <button type="button" class="sunyi kecil" id="qrBukaSemua">Buka semua</button>
           <button type="button" class="sunyi kecil" id="qrLipatSemua">Lipat semua</button>
           <label class="qr-label-sejajar" for="qrTingkat">Tampilkan sampai</label>
-          <select id="qrTingkat" class="qr-pilih-kecil"><option value="0">Semua tingkat</option></select>
+          <select id="qrTingkat" class="qr-pilih-kecil"><option value="0">Semua tingkat</option><option value="1">Tingkat 1, Kegiatan</option></select>
           <span class="qr-renggang"></span>
           <button type="button" class="sunyi kecil" id="qrEkspor">Ekspor ke Excel</button>
           <button type="button" class="kecil" id="qrCetak">Cetak laporan</button>
         </div>
-        <p class="qr-info" id="qrInfo"><b>14</b> baris tampil dari <b>158</b> item   •   Satuan Rupiah   •   Realisasi s.d. Oktober 2026</p>
+        <p class="qr-info" id="qrInfo"><b>28</b> baris tampil dari <b>158</b> item   •   Satuan Rupiah   •   Realisasi s.d. Oktober 2026</p>
         <div class="gulir qr-gulir"><table class="data qr" id="qrTabel"></table></div>
         <p class="galat sembunyi" id="qrGalat"></p>
       </section>
@@ -1295,6 +1329,16 @@ const sel=s=>'<span class="status '+kelasStatus(s)+'">'+aman(s)+'</span>';
 let KONFIG=JSON.parse(JSON.stringify(KONFIG_BAWAAN));
 let MENTAH=null, HASIL=null, TANGGAL=new Date(), PAJANG=false;
 
+/* bar % realisasi berisi angka, dipakai tabel Monitoring per RO */
+function barPersen(x,target,ambang){
+  const p=x.pagu>0?x.sd/x.pagu:0, st=status(x,target,ambang);
+  const lebar=(Math.max(0,Math.min(1,p))*100).toFixed(2);
+  return '<div class="bar-persen '+kelasStatus(st)+'" title="'+aman(st)+', target '+ps1.format(target*100)+'%">'+
+    '<span class="isi" style="width:'+lebar+'%"></span>'+
+    (target>0&&x.pagu>0?'<span class="tanda" style="left:'+(Math.min(1,target)*100).toFixed(2)+'%"></span>':'')+
+    '<span class="teks">'+ps1.format(p*100)+'%</span></div>';
+}
+
 function relKecil(p,target,st){
   const lebar=Math.max(0,Math.min(1,p))*100;
   return '<div class="rel rel-kecil '+kelasStatus(st)+'"><div class="isi" style="width:'+lebar.toFixed(2)+'%"></div>'+
@@ -1511,12 +1555,13 @@ function isiPilihanRo(){
    per RO maupun oleh halaman cetak pilihan. */
 function htmlTabelItem(d,ro){
 const kolomItem=[{j:'Uraian',lebar:1},{j:'Pagu',n:1},{j:'S.d. bulan lalu',n:1},
-  {j:'Bulan ini',n:1},{j:'Total realisasi',n:1},{j:'% real.',n:1},{j:'Sisa pagu',n:1}];
+  {j:'Bulan ini',n:1},{j:'Total realisasi',n:1},{j:'% real.',bar:1},{j:'Sisa pagu',n:1}];
+const targetSatker=HASIL.targetTertimbang, ambangSatker=HASIL.ambangTertimbang;
 const selAngka=(x)=>'<td class="n num">'+rp.format(x.pagu)+'</td>'+
   '<td class="n num">'+rp.format(x.lalu)+'</td>'+
   '<td class="n num">'+rp.format(x.ini)+'</td>'+
   '<td class="n num">'+rp.format(x.sd)+'</td>'+
-  '<td class="n num">'+ps1.format((x.pagu>0?x.sd/x.pagu:0)*100)+'%</td>'+
+  '<td class="kol-bar">'+barPersen(x,targetSatker,ambangSatker)+'</td>'+
   '<td class="n num">'+rp.format(x.pagu-x.sd)+'</td>';
 
 const grup=[];
@@ -1529,7 +1574,7 @@ for(const x of d.item){
   ak.item.push(x); tambah(ak.jml,x); tambah(sub.jml,x);
 }
 
-let isiItem='<thead><tr>'+kolomItem.map(k=>'<th'+(k.n?' class="n"':'')+'>'+aman(k.j)+'</th>').join('')+'</tr></thead><tbody>';
+let isiItem='<thead><tr>'+kolomItem.map(k=>'<th'+(k.n?' class="n"':k.bar?' class="kol-bar"':'')+'>'+aman(k.j)+'</th>').join('')+'</tr></thead><tbody>';
 for(const sub of grup){
   isiItem+='<tr class="grup-sub"><td>'+aman(sub.nama)+'</td>'+selAngka(sub.jml)+'</tr>';
   for(const ak of sub.akun){
@@ -2359,12 +2404,12 @@ function qrBukaPop(k,chip){
 }
 
 /* ---- ekspor Excel ---- */
-function qrMuatXlsx(){
-  if(window.XLSX) return Promise.resolve(window.XLSX);
+function qrMuatExcel(){
+  if(window.ExcelJS) return Promise.resolve(window.ExcelJS);
   return new Promise((jadi,gagal)=>{
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-    s.onload=()=>{ s.remove(); window.XLSX?jadi(window.XLSX):gagal(new Error('Pustaka Excel tidak terbaca.')); };
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
+    s.onload=()=>{ s.remove(); window.ExcelJS?jadi(window.ExcelJS):gagal(new Error('Pustaka Excel tidak terbaca.')); };
     s.onerror=()=>{ s.remove(); gagal(new Error('Pustaka Excel gagal dimuat.')); };
     document.head.appendChild(s);
   });
@@ -2395,41 +2440,121 @@ function qrSusunLarik(){
   if(M.jumlah){ const r=new Array(nB).fill(''); r[0]='Jumlah'; kisi.push(r.concat(M.jumlah.sel.map(keNilai))); tingkat.push({tingkat:0,jumlah:true}); }
   return {kisi,gabung,tingkat,jumlahKepala:M.kepala.length,nB};
 }
+/* Ekspor Excel bergaya dashboard: satu kolom uraian berjenjang seperti di
+   layar, kepala biru muda, baris kelompok berarsir, baris Jumlah emas muda
+   bergaris emas, angka berformat, data bar pada kolom persen, kepala dan
+   kolom uraian dibekukan, serta tata cetak lanskap selebar kertas. */
 async function qrEkspor(){
   const tombol=el('qrEkspor'); const asli=tombol.textContent;
   tombol.disabled=true; tombol.textContent='Menyiapkan…';
   try{
-    const X=await qrMuatXlsx();
-    const {kisi,gabung,tingkat,jumlahKepala,nB}=qrSusunLarik();
+    const E=await qrMuatExcel();
+    const M=QR_MODEL||qrModel();
     const satuan={1:'Rupiah',1000:'Ribu rupiah',1000000:'Juta rupiah',1000000000:'Miliar rupiah'}[QR.satuan]||'Rupiah';
-    const judul=[
-      ['Quick Report Realisasi Anggaran '+KONFIG.satker.nama],
-      ['Realisasi s.d. '+BULAN[HASIL.bulan-1]+' '+(MENTAH.tahun||'')+', diperbarui '+TANGGAL.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})+', satuan '+satuan],
-      ['Baris: '+(QR.baris.map(k=>QR_DIM[k].j).join(' > ')||'-')+'. Kolom: '+(QR.kolom.map(k=>QR_DIM[k].j).join(' > ')||'-')+
-        '. Nilai: '+QR.nilai.map(k=>QR_NIL[k].j).join(', ')+'.'],
-      []
-    ];
-    const geser=judul.length;
-    const desimal=QR.desimal>0?'.'+'0'.repeat(QR.desimal):'';
-    const aoa=judul.concat(kisi.map(r=>r.map(v=>v&&typeof v==='object'?v.v:(v===undefined?'':v))));
-    const ws=X.utils.aoa_to_sheet(aoa);
-    kisi.forEach((r,i)=>r.forEach((v,j)=>{
-      if(v&&typeof v==='object'){
-        const sel=ws[X.utils.encode_cell({r:i+geser,c:j})];
-        if(sel) sel.z=v.t==='p'?'0.0%':v.t==='c'?'#,##0':'#,##0'+desimal;
+    const W={biruTua:'FF08274D',biru:'FF1D4E86',biruMuda:'FFEEF2F6',g0:'FFE9EEF4',g1:'FFF1F4F7',g2:'FFF8F8F6',
+      emas:'FFB8893A',emasTeks:'FF84601D',emasMuda:'FFF7F4ED',garis:'FFE6E2D9',garisKepala:'FFCFD6DD',tinta:'FF13294A',lembut:'FF55657C',merah:'FFB42318'};
+    const HURUF='Calibri';
+    const wb=new E.Workbook(); wb.creator=KONFIG.satker.nama; wb.created=new Date();
+    const ws=wb.addWorksheet('Quick Report',{views:[{showGridLines:false}]});
+    const nKol=1+M.kolom.length;
+    const isi=(c,warna)=>({type:'pattern',pattern:'solid',fgColor:{argb:warna}});
+    const tipis=w=>({style:'thin',color:{argb:w}});
+
+    /* judul */
+    const judulUraian=QR.baris.length?QR.baris.map(k=>QR_DIM[k].j).join(' › '):'Uraian';
+    ws.addRow(['Quick Report Realisasi Anggaran '+KONFIG.satker.nama]);
+    ws.addRow(['Realisasi s.d. '+BULAN[HASIL.bulan-1]+' '+(MENTAH.tahun||'')+'   •   Diperbarui '+
+      TANGGAL.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})+'   •   Satuan '+satuan]);
+    const saringan=Object.entries(QR.kecuali).filter(([k,v])=>QR_DIM[k]&&v&&v.length).map(([k,v])=>QR_DIM[k].j+' (tanpa '+v.length+' nilai)');
+    ws.addRow(['Baris: '+(QR.baris.map(k=>QR_DIM[k].j).join(' › ')||'-')+'   •   Kolom: '+(QR.kolom.map(k=>QR_DIM[k].j).join(' › ')||'-')+
+      '   •   Nilai: '+QR.nilai.map(k=>QR_NIL[k].j).join(', ')+(saringan.length?'   •   Saringan: '+saringan.join(', '):'')]);
+    ws.getCell(1,1).font={name:HURUF,size:15,bold:true,color:{argb:W.biruTua}};
+    ws.getCell(2,1).font={name:HURUF,size:10,color:{argb:W.lembut}};
+    ws.getCell(3,1).font={name:HURUF,size:9,italic:true,color:{argb:W.lembut}};
+    ws.getRow(1).height=24;
+    const garisJudul=ws.addRow([]); garisJudul.height=6;
+    for(let c=1;c<=nKol;c++) ws.getCell(4,c).border={top:{style:'medium',color:{argb:W.emas}}};
+    const awalKepala=5;
+
+    /* kepala, dengan sel gabungan seperti di layar */
+    const terisi=M.kepala.map(()=>[]);
+    M.kepala.forEach((r,i)=>{
+      const baris=awalKepala+i;
+      const akhir=i===M.kepala.length-1;
+      ws.getCell(baris,1).value=akhir?judulUraian:r.judul;
+      let c=2;
+      r.sel.forEach(s=>{
+        while(terisi[i][c]) c++;
+        ws.getCell(baris,c).value=s.teks;
+        for(let a=0;a<s.rs;a++) for(let b=0;b<s.cs;b++) terisi[i+a][c+b]=true;
+        if(s.cs>1||s.rs>1) ws.mergeCells(baris,c,baris+s.rs-1,c+s.cs-1);
+        c+=s.cs;
+      });
+    });
+    const akhirKepala=awalKepala+M.kepala.length-1;
+    for(let r=awalKepala;r<=akhirKepala;r++){
+      ws.getRow(r).height=r===akhirKepala?30:20;
+      for(let c=1;c<=nKol;c++){
+        const sel=ws.getCell(r,c);
+        sel.fill=isi(0,W.biruMuda);
+        sel.font={name:HURUF,size:9.5,bold:true,color:{argb:c===1&&r<akhirKepala?W.biru:W.biruTua}};
+        sel.alignment={vertical:r===akhirKepala?'bottom':'middle',horizontal:c===1?(r<akhirKepala?'right':'left'):'center',wrapText:true};
+        sel.border={bottom:tipis(r===akhirKepala?W.garisKepala:W.garis),right:tipis(W.garis)};
       }
-    }));
-    ws['!merges']=gabung.map(g=>({s:{r:g.s.r+geser,c:g.s.c},e:{r:g.e.r+geser,c:g.e.c}}));
-    const lebarKolom=[];
-    for(let c=0;c<(kisi[0]||[]).length;c++) lebarKolom.push({wch:c<nB?(c===nB-1?46:28):16});
-    ws['!cols']=lebarKolom;
-    /* tingkat garis besar Excel supaya kelompok bisa dilipat di Excel juga */
-    ws['!rows']=[];
-    tingkat.forEach((t,i)=>{ ws['!rows'][geser+jumlahKepala+i]={level:t.jumlah?0:t.grup?t.tingkat:Math.max(0,QR.baris.length>1?t.tingkat:0)}; });
-    const wb=X.utils.book_new();
-    X.utils.book_append_sheet(wb,ws,'Quick Report');
-    const tgl=new Date().toISOString().slice(0,10);
-    X.writeFile(wb,'quick-report-realisasi-'+tgl+'.xlsx');
+    }
+
+    /* badan */
+    const format=x=>x.t==='p'?'0.0%':x.t==='c'?'#,##0':(QR.desimal>0?'#,##0.'+'0'.repeat(QR.desimal):'#,##0')+';[Red]-'+(QR.desimal>0?'#,##0.'+'0'.repeat(QR.desimal):'#,##0');
+    const tulisBaris=(label,sel,gaya)=>{
+      const row=ws.addRow([label].concat(sel.map(x=>x===null?null:(x.t==='r'?x.v/QR.satuan:x.v))));
+      row.height=gaya.jumlah?20:18;
+      for(let c=1;c<=nKol;c++){
+        const cel=row.getCell(c), x=c>1?sel[c-2]:null;
+        cel.font={name:HURUF,size:10,bold:!!(gaya.grup||gaya.jumlah),color:{argb:gaya.jumlah?W.biruTua:gaya.grup?W.biruTua:W.tinta}};
+        if(gaya.isi) cel.fill=isi(0,gaya.isi);
+        cel.border={bottom:tipis(W.garis),right:tipis(W.garis)};
+        if(gaya.jumlah) cel.border={top:{style:'medium',color:{argb:W.emas}},bottom:tipis(W.garis),right:tipis(W.garis)};
+        if(c===1) cel.alignment={vertical:'middle',wrapText:true,indent:gaya.indent||0};
+        else{ cel.alignment={vertical:'middle',horizontal:'right'}; if(x) cel.numFmt=format(x); }
+      }
+      if(gaya.level) row.outlineLevel=gaya.level;
+      return row;
+    };
+    const awalBadan=akhirKepala+1;
+    const arsir=[W.g0,W.g1,W.g2];
+    M.badan.forEach(b=>{
+      tulisBaris(b.label,b.sel,{grup:b.grup,isi:b.grup?arsir[Math.min(b.tingkat,2)]:null,
+        indent:b.tingkat*2+(b.grup?0:1),level:Math.min(7,b.tingkat)});
+    });
+    if(M.jumlah) tulisBaris('Jumlah',M.jumlah.sel,{jumlah:true,isi:W.emasMuda});
+    const akhirBadan=ws.rowCount;
+
+    /* lebar kolom */
+    ws.getColumn(1).width=Math.min(60,Math.max(34,...M.badan.map(b=>String(b.label).length*0.9+b.tingkat*2)));
+    M.kolom.forEach((k,i)=>{ ws.getColumn(i+2).width=k.nil.persen?12:k.nil.cacah?10:17; });
+
+    /* data bar pada kolom persen, senada dengan bar di dashboard */
+    if(akhirBadan>=awalBadan) M.kolom.forEach((k,i)=>{
+      if(!k.nil.persen) return;
+      const huruf=ws.getColumn(i+2).letter;
+      ws.addConditionalFormatting({ref:huruf+awalBadan+':'+huruf+akhirBadan,rules:[{type:'dataBar',priority:1,gradient:true,
+        minLength:0,maxLength:100,cfvo:[{type:'num',value:0},{type:'num',value:1}],color:{argb:'FFD7B066'}}]});
+    });
+
+    /* bekukan kepala dan kolom uraian, tata cetak */
+    ws.views=[{state:'frozen',xSplit:1,ySplit:akhirKepala,showGridLines:false,topLeftCell:'B'+(akhirKepala+1)}];
+    ws.properties.outlineProperties={summaryBelow:false};
+    ws.pageSetup={paperSize:9,orientation:nKol>6?'landscape':'portrait',fitToPage:true,fitToWidth:1,fitToHeight:0,
+      margins:{left:.35,right:.35,top:.45,bottom:.45,header:.2,footer:.2}};
+    ws.pageSetup.printTitlesRow=awalKepala+':'+akhirKepala;
+    ws.headerFooter.oddFooter='&L&8'+KONFIG.satker.nama+'&R&8Halaman &P dari &N';
+
+    const buf=await wb.xlsx.writeBuffer();
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='quick-report-realisasi-'+new Date().toISOString().slice(0,10)+'.xlsx';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
   }catch(err){
     /* tanpa internet, berikan CSV supaya tetap bisa dibuka di Excel */
     const {kisi}=qrSusunLarik();
@@ -2448,10 +2573,50 @@ async function qrEkspor(){
   }
 }
 
+/* Ukuran huruf cetak Quick Report.
+   Tabel disalin ke wadah tersembunyi selebar kertas (A4 dikurangi margin
+   9 mm kiri kanan), lalu dicari ukuran huruf terbesar antara 7 dan 11 pt
+   yang masih muat. Kalau di kertas tegak tabel masih bisa 9 pt atau lebih,
+   laporan dicetak tegak. Kalau di lanskap pada 7 pt pun belum muat, kolom
+   uraian dipersempit sampai 9em supaya teksnya turun ke baris berikutnya. */
+function qrAturCetak(){
+  const tabel=el('qrTabel'), wadahHasil=document.querySelector('.qr-hasil');
+  if(!tabel||!wadahHasil||!tabel.rows.length) return {huruf:6.8,tegak:false};
+  const PX_MM=96/25.4, LEBAR={tegak:(210-18)*PX_MM*.985, lanskap:(297-18)*PX_MM*.985};
+  const ukur=document.createElement('div'); ukur.className='qr-ukur';
+  const salin=tabel.cloneNode(true); salin.removeAttribute('id'); ukur.appendChild(salin);
+  /* baris yang dilipat di layar juga tidak tercetak, jadi ikut disembunyikan */
+  document.body.appendChild(ukur);
+  const muat=(lebar,pt,lbl)=>{
+    ukur.style.width=lebar+'px'; salin.style.fontSize=pt+'pt'; salin.style.setProperty('--qr-lbl',lbl+'em');
+    return salin.offsetWidth<=lebar+.5;
+  };
+  const terbesar=(lebar,lbl)=>{ for(let pt=11;pt>=7;pt-=.25){ if(muat(lebar,pt,lbl)) return pt; } return 0; };
+  let hasil;
+  const ptTegak=terbesar(LEBAR.tegak,14);
+  if(ptTegak>=9) hasil={huruf:ptTegak,tegak:true,lbl:14};
+  else{
+    let lbl=14, pt=terbesar(LEBAR.lanskap,lbl);
+    while(!pt&&lbl>9){ lbl-=1; pt=terbesar(LEBAR.lanskap,lbl); }
+    hasil={huruf:pt||7,tegak:false,lbl};
+  }
+  ukur.remove();
+  wadahHasil.style.setProperty('--qr-huruf',hasil.huruf+'pt');
+  wadahHasil.style.setProperty('--qr-lbl',hasil.lbl+'em');
+  document.body.classList.toggle('cetak-tegak',hasil.tegak);
+  return hasil;
+}
+function qrBersihCetak(){
+  const w=document.querySelector('.qr-hasil');
+  if(w){ w.style.removeProperty('--qr-huruf'); w.style.removeProperty('--qr-lbl'); }
+  document.body.classList.remove('cetak-tegak');
+}
+
 function qrCetak(){
   qrTutupPop();
+  qrAturCetak();
   document.body.classList.add('cetak-laporan');
-  const bersihkan=()=>{ document.body.classList.remove('cetak-laporan'); window.removeEventListener('afterprint',bersihkan); };
+  const bersihkan=()=>{ document.body.classList.remove('cetak-laporan'); qrBersihCetak(); window.removeEventListener('afterprint',bersihkan); };
   window.addEventListener('afterprint',bersihkan);
   setTimeout(()=>{ window.print(); setTimeout(bersihkan,1500); },60);
 }
