@@ -2533,11 +2533,14 @@ async function qrEkspor(){
     ws.getColumn(1).width=Math.min(60,Math.max(34,...M.badan.map(b=>String(b.label).length*0.9+b.tingkat*2)));
     M.kolom.forEach((k,i)=>{ ws.getColumn(i+2).width=k.nil.persen?12:k.nil.cacah?10:17; });
 
-    /* data bar pada kolom persen, senada dengan bar di dashboard */
+    /* data bar pada kolom persen, senada dengan bar di dashboard. gradient:false wajib,
+       karena ExcelJS 4.4.0 menulis x14:id kosong untuk data bar bergradasi
+       sehingga Excel menganggap berkasnya rusak dan meminta perbaikan. */
+    let prioritas=0;
     if(akhirBadan>=awalBadan) M.kolom.forEach((k,i)=>{
       if(!k.nil.persen) return;
       const huruf=ws.getColumn(i+2).letter;
-      ws.addConditionalFormatting({ref:huruf+awalBadan+':'+huruf+akhirBadan,rules:[{type:'dataBar',priority:1,gradient:true,
+      ws.addConditionalFormatting({ref:huruf+awalBadan+':'+huruf+akhirBadan,rules:[{type:'dataBar',priority:++prioritas,gradient:false,
         minLength:0,maxLength:100,cfvo:[{type:'num',value:0},{type:'num',value:1}],color:{argb:'FFD7B066'}}]});
     });
 
