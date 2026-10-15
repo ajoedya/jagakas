@@ -2546,7 +2546,9 @@ async function qrEkspor(){
 
     /* bekukan kepala dan kolom uraian, tata cetak */
     ws.views=[{state:'frozen',xSplit:1,ySplit:akhirKepala,showGridLines:false,topLeftCell:'B'+(akhirKepala+1)}];
-    ws.properties.outlineProperties={summaryBelow:false};
+    /* outlineProperties sengaja tidak dipakai. Bersama fitToPage, ExcelJS menulis
+       outlinePr sesudah pageSetUpPr, padahal skema mewajibkan sebaliknya,
+       sehingga Excel menolak sheet1.xml dan meminta perbaikan. */
     ws.pageSetup={paperSize:9,orientation:nKol>6?'landscape':'portrait',fitToPage:true,fitToWidth:1,fitToHeight:0,
       margins:{left:.35,right:.35,top:.45,bottom:.45,header:.2,footer:.2}};
     ws.pageSetup.printTitlesRow=awalKepala+':'+akhirKepala;
