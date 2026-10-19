@@ -438,6 +438,9 @@ footer.kaki{
 .penutup h2{margin:0 0 10px;color:var(--biru-tua);font-size:clamp(24px,2.4vw,32px);font-weight:700;line-height:1.1;letter-spacing:-.025em}
 .penutup-isi > p:last-child{margin:0;color:var(--tinta-lembut);font-size:15px;line-height:1.6}
 .penutup + .bungkus footer.kaki{margin-top:0;border-top:0}
+/* keterangan pembuat, sama dengan kaki situs Layanan Subbagian Umum */
+footer.kaki .kredit{color:#677d8e;white-space:nowrap}
+@media (max-width:560px){footer.kaki .kredit{display:block;margin-top:2px}footer.kaki .pisah{display:none}}
 
 /* ---------- pembuka Ringkasan ----------
    Foto kini tampil di kop sebagai duotone biru tua (lihat "kop berfoto"),
@@ -1051,7 +1054,7 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
       <div class="tq-tutor-isi">
         <div>
           <ol class="tq-langkah" id="tqLangkah">
-            <li tabindex="0" data-i="0"><b>Pilih baris</b>Seret dimensi dari Dimensi tersedia ke kotak Baris.</li>
+            <li tabindex="0" data-i="0" class="tq-aktif"><b>Pilih baris</b>Seret dimensi dari Dimensi tersedia ke kotak Baris.</li>
             <li tabindex="0" data-i="1"><b>Pilih kolom</b>Seret dimensi lain ke kotak Kolom untuk memecah angka ke samping.</li>
             <li tabindex="0" data-i="2"><b>Saring nilainya</b>Klik dimensi, lalu hilangkan centang nilai yang tidak perlu.</li>
             <li tabindex="0" data-i="3"><b>Pilih angka yang tampil</b>Centang Pagu, Realisasi, atau Persen realisasi.</li>
@@ -1061,7 +1064,7 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
           <div class="tq-kendali">
             <button type="button" class="tq-tbl" id="tqTJeda">Jeda</button>
             <button type="button" class="tq-tbl" id="tqTUlang">Ulangi</button>
-            <span class="tq-kemajuan" aria-hidden="true"><i id="tqTBar"></i></span>
+            <span class="tq-kemajuan" aria-hidden="true"><i id="tqTBar" style="width: 16.6667%;"></i></span>
           </div>
         </div>
         <div>
@@ -1069,7 +1072,7 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
             <div class="tq-mini" id="tqMini">
               <h4>Susun laporan</h4>
               <div class="tq-zona-baris">
-                <div class="tq-zona" data-z="tersedia"><h5>Dimensi tersedia</h5><div class="tq-chips" id="tqZTersedia"></div></div>
+                <div class="tq-zona" data-z="tersedia"><h5>Dimensi tersedia</h5><div class="tq-chips" id="tqZTersedia"><span class="tq-chip" data-d="Unit pengampu">Unit pengampu ▾</span><span class="tq-chip" data-d="Kelompok belanja">Kelompok belanja ▾</span><span class="tq-chip" data-d="Jenis belanja">Jenis belanja ▾</span><span class="tq-chip" data-d="Akun">Akun ▾</span></div></div>
                 <div class="tq-zona" data-z="baris"><h5>Baris</h5><div class="tq-chips" id="tqZBaris"></div></div>
                 <div class="tq-zona" data-z="kolom"><h5>Kolom</h5><div class="tq-chips" id="tqZKolom"></div></div>
               </div>
@@ -1082,15 +1085,15 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
                   <span class="tq-btn tq-utama" id="tqBCetak">Cetak laporan</span>
                 </span>
               </div>
-              <div class="tq-tabel-wadah" id="tqTabel"></div>
+              <div class="tq-tabel-wadah" id="tqTabel"><table class="tq-t"><thead><tr><th>Uraian</th><th>Pagu</th></tr></thead><tbody><tr class="tq-jml"><td>Jumlah</td><td>1.746,8</td></tr></tbody></table></div>
               <p class="tq-ket-tabel">Satuan juta rupiah</p>
               <div class="tq-pop" id="tqPop"><b>Unit pengampu</b><div id="tqPopIsi"></div></div>
               <div class="tq-kabar" id="tqKabar"></div>
             </div>
-            <div class="tq-kursor" id="tqKursor"><span class="tq-riak"></span>
+            <div class="tq-kursor" id="tqKursor" style="transition-duration: 900ms; transform: translate(-3px, -2px);"><span class="tq-riak"></span>
               <svg viewBox="0 0 22 22" width="22" height="22"><path d="M3 2l14 8-6.2 1.6L8 18z" fill="#fff" stroke="#08274d" stroke-width="1.6" stroke-linejoin="round"></path></svg></div>
           </div>
-          <p class="tq-narasi" id="tqNarasi" aria-live="polite"></p>
+          <p class="tq-narasi" id="tqNarasi" aria-live="polite">1. Seret <b>Unit pengampu</b> ke kotak <b>Baris</b>. Tabel langsung dipecah per unit.</p>
         </div>
       </div>
     </details>
@@ -1174,7 +1177,7 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
     <p id="penutupKet">Angka pada halaman ini diolah dari laporan Fa satker 537962 dengan realisasi sampai Oktober 2026, diperbarui 15 Oktober 2026.</p>
   </div>
 </section>
-<div class="bungkus"><footer class="kaki"><span>KPKNL Balikpapan · Diolah dari Laporan Ketersediaan Dana Detail (Fa)</span><span>Berintegritas dalam Tugas, Prima dalam Pelayanan.</span></footer></div>
+<div class="bungkus"><footer class="kaki"><span>KPKNL Balikpapan · Subbagian Umum <span class="kredit"><span class="pisah">· </span>Built with Claude ft. GPT ❤️</span></span><span>Berintegritas dalam Tugas, Prima dalam Pelayanan.</span></footer></div>
 
 
 <script>
