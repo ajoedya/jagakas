@@ -438,9 +438,9 @@ footer.kaki{
 .penutup h2{margin:0 0 10px;color:var(--biru-tua);font-size:clamp(24px,2.4vw,32px);font-weight:700;line-height:1.1;letter-spacing:-.025em}
 .penutup-isi > p:last-child{margin:0;color:var(--tinta-lembut);font-size:15px;line-height:1.6}
 .penutup + .bungkus footer.kaki{margin-top:0;border-top:0}
-/* keterangan pembuat, sama dengan kaki situs Layanan Subbagian Umum */
-footer.kaki .kredit{color:#677d8e;white-space:nowrap}
-@media (max-width:560px){footer.kaki .kredit{display:block;margin-top:2px}footer.kaki .pisah{display:none}}
+/* kredit pembuat di ujung kanan, sama dengan kaki beranda bengkelpdf; di layar sempit turun ke baris sendiri */
+footer.kaki .kredit{font-weight:600;color:var(--biru-tua);white-space:nowrap}
+footer.kaki .kredit-hati{display:inline-block;width:14px;height:14px;vertical-align:-2px;fill:#c8423b}
 
 /* ---------- pembuka Ringkasan ----------
    Foto kini tampil di kop sebagai duotone biru tua (lihat "kop berfoto"),
@@ -1177,7 +1177,7 @@ button.qr-lipat:hover{background:var(--biru-muda);transform:none}
     <p id="penutupKet">Angka pada halaman ini diolah dari laporan Fa satker 537962 dengan realisasi sampai Oktober 2026, diperbarui 15 Oktober 2026.</p>
   </div>
 </section>
-<div class="bungkus"><footer class="kaki"><span>KPKNL Balikpapan · Subbagian Umum <span class="kredit"><span class="pisah">· </span>Built with Claude ft. GPT ❤️</span></span><span>Berintegritas dalam Tugas, Prima dalam Pelayanan.</span></footer></div>
+<div class="bungkus"><footer class="kaki"><span>KPKNL Balikpapan · Berintegritas dalam Tugas, Prima dalam Pelayanan.</span><span class="kredit">Built with Claude ft. GPT <svg class="kredit-hati" viewBox="0 0 24 24" width="14" height="14" role="img" aria-label="cinta"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 5 6.4 5c2 0 3.6 1.1 4.6 2.6l1 1.4 1-1.4C14 6.1 15.6 5 17.6 5 21 5 23.1 8.4 21.6 11.8 19.5 16.4 12 21 12 21z"></path></svg></span></footer></div>
 
 
 <script>
